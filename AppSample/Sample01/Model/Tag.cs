@@ -1,5 +1,4 @@
 ﻿using ReactiveUI.Fody.Helpers;
-
 namespace Sample01.Model
 {
     public interface ITag
@@ -18,7 +17,7 @@ namespace Sample01.Model
         /// 04 : A2750PC
         /// </summary>
         [Reactive]
-        public ushort DeviceType { get; set; }
+        public TagDeviceType DeviceType { get; set; }
 
         /// <summary>
         /// 01 : Memory         (Only A2700M)
@@ -45,8 +44,19 @@ namespace Sample01.Model
         /// </summary>
         [Reactive]
         public ElementaryDataType DataType { get; set; }
-    }
 
+        public override string ToString()
+        {
+            return $"{Name} , {DeviceType}, {Channel}, {ChannelId}, {DataType}";
+        }
+    }
+    public enum TagDeviceType
+    {
+        A2700M,
+        Remote,
+        A2750P,
+        A2750PC
+    }
     public enum Channel
     {
         None,
