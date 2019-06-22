@@ -1,4 +1,5 @@
-﻿using ReactiveUI.Fody.Helpers;
+﻿using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 namespace Sample01.Model
 {
     public interface ITag
@@ -6,7 +7,7 @@ namespace Sample01.Model
         string Name { get; set; }
     }
 
-    public class IncomingTag : ITag
+    public class IncomingTag : ReactiveObject,ITag
     {
         [Reactive]
         public string Name { get; set; }
@@ -45,9 +46,16 @@ namespace Sample01.Model
         [Reactive]
         public ElementaryDataType DataType { get; set; }
 
+        public IncomingTag()
+        {
+            DeviceType = TagDeviceType.A2700M;
+            Channel = Channel.Memory;
+            ChannelId = 0;
+            DataType = ElementaryDataType.Bool;
+        }
         public override string ToString()
         {
-            return $"{Name} , {DeviceType}, {Channel}, {ChannelId}, {DataType}";
+            return $"{Name}, {DeviceType}, {Channel}, {ChannelId}, {DataType}";
         }
     }
     public enum TagDeviceType

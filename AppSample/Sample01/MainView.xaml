@@ -8,13 +8,55 @@
                             xmlns:reactiveui="http://reactiveui.net"
                             mc:Ignorable="d"
                             Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <DataTemplate x:Key="RowDetailsTemplate">
+            <Grid TextBlock.Foreground="White">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <TextBlock Text="Selected Tag Information"  Grid.Row="0"/>
+                <TextBlock Text="{Binding}" Grid.Row="1"/>
+            </Grid>
+
+        </DataTemplate>
+    </Window.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <Button x:Name="OpenFile" Content="Open" Height="26" Width="80" Margin="0,0,3,0"/>
             <Button x:Name="SaveFile" Content="Save" Height="26" Width="80" Margin="0,0,3,0"/>
         </StackPanel>
         <Grid>
-            <DataGrid x:Name="TagDataGrid"/>
+            <DataGrid x:Name="TagDataGrid"
+                      RowHeight="30"
+                      ColumnWidth="*"
+                      ItemsSource="{Binding Tags, UpdateSourceTrigger=PropertyChanged}"
+                      RowHeaderWidth = "50"
+                      Background="LightGray"
+                      Margin="5"
+                      BorderBrush="WhiteSmoke"
+                      AreRowDetailsFrozen = "True"   
+                      AutoGenerateColumns="False"
+                      RowDetailsTemplate="{StaticResource RowDetailsTemplate}"
+                      FrozenColumnCount = "2">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver"  Value="True" >
+                                <Setter Property="Background"  Value="Gray" />
+                                <Setter Property="Foreground"  Value="White" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}"/>
+                    <DataGridComboBoxColumn Header="Device" SelectedItemBinding="{Binding DeviceType, UpdateSourceTrigger=LostFocus}"/>
+                    <DataGridComboBoxColumn Header="Channel" SelectedItemBinding="{Binding Channel, UpdateSourceTrigger=LostFocus}"/>
+                    <DataGridTextColumn Header="Channel No" Binding="{Binding ChannelId, UpdateSourceTrigger=LostFocus}"/>
+                    <DataGridComboBoxColumn Header="DataType" SelectedItemBinding="{Binding DataType, UpdateSourceTrigger=LostFocus}"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
     </DockPanel>
 </reactiveui:ReactiveWindow>

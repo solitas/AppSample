@@ -61,6 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="TagService.cs" />
     <Page Include="MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -70,6 +71,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExcelHelper.cs" />
+    <Compile Include="ITagService.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>

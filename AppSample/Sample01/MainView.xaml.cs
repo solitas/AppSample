@@ -25,11 +25,12 @@ namespace Sample01
         public MainView()
         {
             InitializeComponent();
-            ViewModel = new MainViewModel();
+            ITagService service = new TagService();
+            ViewModel = new MainViewModel(service);
 
             this.WhenActivated(d =>
             {
-                d(this.OneWayBind(ViewModel, viewModel => viewModel.Tags, view => view.TagDataGrid.ItemsSource));
+                d(this.OneWayBind(ViewModel, viewModel => viewModel.ViewData, view => view.TagDataGrid.ItemsSource));
                 d(this.BindCommand(ViewModel, viewModel => viewModel.Open, view => view.OpenFile));
                 d(this.ViewModel.OpenFileInteraction.RegisterHandler(context =>
                 {

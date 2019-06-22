@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -20,58 +19,33 @@ namespace Sample01
         // interactions
         public Interaction<Unit, string> OpenFileInteraction { get; } = new Interaction<Unit, string>();
 
-        private IObservable<bool> _isAvailable;
-        private readonly SourceList<IncomingTag> _tagSources;
-        public MainViewModel()
+        private readonly ITagService _tagService;
+
+        public MainViewModel(ITagService tagService)
         {
-            _tagSources = new SourceList<IncomingTag>();
-            _isAvailable = this.WhenAnyValue(x => x.OpenFileName)
-                               .Select(x => string.IsNullOrEmpty(x));
-            Tags = new ObservableCollectionExtended<IncomingTag>();
+            _tagService = tagService;
 
-            _tagSources.Connect()
-                       .ObserveOn(RxApp.MainThreadScheduler)
-                       .Bind(Tags)
-                       .Subscribe();
-            
-            Open = ReactiveCommand.Create(() =>
+            ViewData = new ObservableCollectionExtended<IncomingTag>();
+            _tagService.Tags
+                .Connect()
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(ViewData)
+                .Subscribe();
+
+            Open = ReactiveCommand.CreateFromTask(async () =>
             {
-                OpenFileInteraction
-                .Handle(Unit.Default)
-                .Subscribe(fileName =>
+                var fileName = await OpenFileInteraction.Handle(Unit.Default);
+                return Task.Run(() =>
                 {
-                    if (string.IsNullOrEmpty(fileName)) return;
-                    // Tags Clear
-                    Tags.Clear();
-
-                    var tags = ExcelHelper.GetTagsInFile(fileName);
-
-                    
-                    if (tags != null)
-                    {
-                        OpenFileName = fileName;
-
-                        foreach (var tag in tags)
-                        {
-                            Console.WriteLine(tag);
-                        }
-
-                        _tagSources.AddRange(tags);
-                    }
+                    _tagService.LoadTagFromFile(fileName);
                 });
 
-            }, _isAvailable);
+            }, _tagService.IsValid);
 
-
-        }
-
-        public IObservableCollection <IncomingTag> Tags
-        {
-            get;
         }
 
         [Reactive]
-        public string OpenFileName
+        public ObservableCollectionExtended<IncomingTag> ViewData
         {
             get; set;
         }
